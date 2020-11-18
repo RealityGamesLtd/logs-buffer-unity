@@ -1,0 +1,14 @@
+{
+  "name": "com.realitygames.logs_buffer",
+  "version": "1.0.1",
+  "displayName": "Logs Buffer",
+  "description": "Custom logger implementation for buffering the runtime logs.",
+  "unity": "2019.4",
+  "keywords": [
+    "logger", "log"
+  ],
+  "author": {
+    "name": "Reality Games",
+    "email": "alex.strilchuk@reality.co"
+  }
+}
