@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 namespace CustomLogger
 {
-
     public class LogsBuffer : ILogHandler
     {
         public class LogItem
@@ -97,7 +96,7 @@ namespace CustomLogger
             {
                 var logItem = new LogItem(logType, string.Format(format, args));
 
-                lock(logsBuffer)
+                lock (logsBuffer)
                 {
                     logsBuffer.AddLast(logItem);
                 }
@@ -109,6 +108,14 @@ namespace CustomLogger
             if (shouldLogToConsole && logType <= consoleLogLevel)
             {
                 unityLogHandler.LogFormat(logType, context, format, args);
+            }
+        }
+
+        public void ClearBufferedLogs()
+        {
+            lock (logsBuffer)
+            {
+                logsBuffer.Clear();
             }
         }
 
