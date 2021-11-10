@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -52,10 +51,12 @@ namespace CustomLogger
         {
             if (Instance == null)
             {
-                Instance = new LogsBuffer();
+                Instance = new LogsBuffer
+                {
+                    logsBuffer = new LinkedList<LogItem>()
+                };
             }
 
-            Instance.logsBuffer = new LinkedList<LogItem>();
             if (logerConfig != null)
             {
                 Instance.shouldLogToConsole = logerConfig.ShouldLogToConsole;
@@ -75,7 +76,12 @@ namespace CustomLogger
         public void LogException(Exception exception, UnityEngine.Object context)
         {
             var logItem = new LogItem(LogType.Exception, string.Format("{0}\n{1}", exception.Message, exception.StackTrace));
-            logsBuffer.AddLast(logItem);
+
+            lock (logsBuffer)
+            {
+                logsBuffer.AddLast(logItem);
+            }
+
             RemoveOldLogsFromBuffer();
             OnLog?.Invoke(logItem);
 
@@ -90,7 +96,12 @@ namespace CustomLogger
             if (logType <= bufferLogLevel)
             {
                 var logItem = new LogItem(logType, string.Format(format, args));
-                logsBuffer.AddLast(logItem);
+
+                lock(logsBuffer)
+                {
+                    logsBuffer.AddLast(logItem);
+                }
+
                 RemoveOldLogsFromBuffer();
                 OnLog?.Invoke(logItem);
             }
@@ -103,9 +114,12 @@ namespace CustomLogger
 
         private void RemoveOldLogsFromBuffer()
         {
-            while (logsBuffer.Count > bufferSize)
+            lock (logsBuffer)
             {
-                logsBuffer.RemoveFirst();
+                while (logsBuffer.Count > bufferSize)
+                {
+                    logsBuffer.RemoveFirst();
+                }
             }
         }
     }
