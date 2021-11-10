@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Config;
 using CustomLogger;
 using NUnit.Framework;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 
 namespace Tests
 {
     public class LogsBufferTest
     {
+        [SetUp]
+        public void Setup()
+        {
+            LogsBuffer.Instance?.ClearBufferedLogs();
+        }
+
         [Test]
         public void LogsForLogLogLevel()
         {
@@ -27,7 +29,7 @@ namespace Tests
             Debug.LogError("TestError");
 
             var logs = LogsBuffer.Instance.Logs;
-            Assert.AreEqual(logs.Length, 3);
+            Assert.AreEqual(3, logs.Length);
             Assert.IsTrue(logs.Where(i => i.logType == LogType.Log).FirstOrDefault() != null);
             Assert.IsTrue(logs.Where(i => i.logType == LogType.Warning).FirstOrDefault() != null);
             Assert.IsTrue(logs.Where(i => i.logType == LogType.Error).FirstOrDefault() != null);
@@ -47,7 +49,7 @@ namespace Tests
             Debug.LogError("TestError");
 
             var logs = LogsBuffer.Instance.Logs;
-            Assert.AreEqual(logs.Length, 2);
+            Assert.AreEqual(2, logs.Length);
             Assert.IsTrue(logs.Where(i => i.logType == LogType.Log).FirstOrDefault() == null);
             Assert.IsTrue(logs.Where(i => i.logType == LogType.Warning).FirstOrDefault() != null);
             Assert.IsTrue(logs.Where(i => i.logType == LogType.Error).FirstOrDefault() != null);
@@ -67,7 +69,7 @@ namespace Tests
             Debug.LogError("TestError");
 
             var logs = LogsBuffer.Instance.Logs;
-            Assert.AreEqual(logs.Length, 1);
+            Assert.AreEqual(1, logs.Length);
             Assert.IsTrue(logs.Where(i => i.logType == LogType.Log).FirstOrDefault() == null);
             Assert.IsTrue(logs.Where(i => i.logType == LogType.Warning).FirstOrDefault() == null);
             Assert.IsTrue(logs.Where(i => i.logType == LogType.Error).FirstOrDefault() != null);
@@ -93,12 +95,12 @@ namespace Tests
             }
 
             var logs = LogsBuffer.Instance.Logs;
-            Assert.AreEqual(logs.Length, bufferSize);
+            Assert.AreEqual(bufferSize, logs.Length);
             Assert.IsTrue(logs.Where(i => i.message == string.Format(logFormat, LogType.Error, 0)).FirstOrDefault() == null);
 
             for (var logIndex = 0; logIndex < bufferSize; logIndex++)
             {
-                Assert.AreEqual(logs[logIndex].message, string.Format(logFormat, LogType.Error, logIndex + 1));
+                Assert.AreEqual(string.Format(logFormat, LogType.Error, logIndex + 1), logs[logIndex].message);
             }
         }
 
@@ -121,8 +123,8 @@ namespace Tests
             Assert.AreEqual(logsList.Count, loopIterations);
             for (var logIndex = 0; logIndex < loopIterations; logIndex++)
             {
-                Assert.AreEqual(logsList[logIndex].logType, LogType.Warning);
-                Assert.AreEqual(logsList[logIndex].message, string.Format(logTextFormat, logIndex));
+                Assert.AreEqual(LogType.Warning, logsList[logIndex].logType);
+                Assert.AreEqual(string.Format(logTextFormat, logIndex), logsList[logIndex].message);
             }
 
             // clean up
