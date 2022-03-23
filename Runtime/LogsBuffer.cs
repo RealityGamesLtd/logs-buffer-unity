@@ -70,6 +70,12 @@ namespace CustomLogger
                 Instance.bufferSize = 1000;
                 Instance.bufferLogLevel = LogType.Log;
             }
+
+            if (Debug.isDebugBuild)
+            {
+                Instance.shouldLogToConsole = true;
+                Instance.consoleLogLevel = LogType.Log;
+            }
         }
 
         public void LogException(Exception exception, UnityEngine.Object context)
