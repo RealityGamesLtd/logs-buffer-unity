@@ -71,7 +71,7 @@ namespace CustomLogger
                 Instance.bufferLogLevel = LogType.Log;
             }
 
-            if (Debug.isDebugBuild)
+            if (Application.isEditor == false && Debug.isDebugBuild)
             {
                 Instance.shouldLogToConsole = true;
                 Instance.consoleLogLevel = LogType.Log;
