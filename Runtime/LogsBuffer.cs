@@ -55,6 +55,10 @@ namespace CustomLogger
                     logsBuffer = new LinkedList<LogItem>()
                 };
             }
+            else
+            {
+                Instance.logsBuffer.Clear();
+            }
 
             if (logerConfig != null)
             {
@@ -74,8 +78,11 @@ namespace CustomLogger
             if (Application.isEditor == false && Debug.isDebugBuild)
             {
                 Instance.shouldLogToConsole = true;
-                Instance.consoleLogLevel = LogType.Log;
             }
+
+#if ENABLE_LOGGING
+            Instance.shouldLogToConsole = true;
+#endif
         }
 
         public void LogException(Exception exception, UnityEngine.Object context)

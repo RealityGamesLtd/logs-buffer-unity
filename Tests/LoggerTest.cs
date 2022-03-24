@@ -4,9 +4,11 @@ using Config;
 using CustomLogger;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace Tests
 {
+    [TestFixture]
     public class LogsBufferTest
     {
         [SetUp]
@@ -18,6 +20,7 @@ namespace Tests
         [Test]
         public void LogsForLogLogLevel()
         {
+            LogAssert.ignoreFailingMessages = true;
             LogsBuffer.Init(new MockLoggerConfig
             {
                 BufferSize = 10,
@@ -38,6 +41,7 @@ namespace Tests
         [Test]
         public void LogsForWarningLogLevel()
         {
+            LogAssert.ignoreFailingMessages = true;
             LogsBuffer.Init(new MockLoggerConfig
             {
                 BufferSize = 10,
@@ -49,15 +53,16 @@ namespace Tests
             Debug.LogError("TestError");
 
             var logs = LogsBuffer.Instance.Logs;
-            Assert.AreEqual(2, logs.Length);
-            Assert.IsTrue(logs.Where(i => i.logType == LogType.Log).FirstOrDefault() == null);
             Assert.IsTrue(logs.Where(i => i.logType == LogType.Warning).FirstOrDefault() != null);
             Assert.IsTrue(logs.Where(i => i.logType == LogType.Error).FirstOrDefault() != null);
+            Assert.IsTrue(logs.Where(i => i.logType == LogType.Log).FirstOrDefault() == null);
+            Assert.AreEqual(2, logs.Length);
         }
 
         [Test]
         public void LogsForErrorLogLevel()
         {
+            LogAssert.ignoreFailingMessages = true;
             LogsBuffer.Init(new MockLoggerConfig
             {
                 BufferSize = 10,
@@ -78,6 +83,7 @@ namespace Tests
         [Test]
         public void BufferSizeAndItemsOrder()
         {
+            LogAssert.ignoreFailingMessages = true;
             var loopIterations = 1001;
             var bufferSize = loopIterations - 1;
             var logFormat = "Test{0}[{1}]";
@@ -107,6 +113,7 @@ namespace Tests
         [Test]
         public void OnLogEvent()
         {
+            LogAssert.ignoreFailingMessages = true;
             // setup
             var logsList = new List<LogsBuffer.LogItem>();
             LogsBuffer.OnLog += SaveLog;

@@ -12,6 +12,8 @@ Debug.LogError();
 Logs Buffer gives a possibility to add specific listener on log created event and handle it in a custom way.
 
 # Usage
+To enable logging to console regardless of config file use scripting define symbol `ENABLE_LOGGING`.
+
 To call a log use default Unity logging methods like `Debug.Log(...), Debug.LogWarning(...), Debug.LogError(...)`
 Logs Buffer package provides class `LogsBuffer` which holds static fields:
 ```
